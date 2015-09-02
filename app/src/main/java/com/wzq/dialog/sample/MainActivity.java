@@ -1,13 +1,13 @@
 package com.wzq.dialog.sample;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.wzq.dialog.EasyDialog;
-import com.wzq.dialog.R;
+
 
 public class MainActivity extends AppCompatActivity {
 
