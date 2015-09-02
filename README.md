@@ -1,0 +1,2 @@
+# EasyDialog
+A custom dialog 
