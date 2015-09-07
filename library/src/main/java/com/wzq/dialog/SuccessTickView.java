@@ -1,17 +1,31 @@
 package com.wzq.dialog;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
+/**
+ * Created by wzq on 15/9/2.
+ */
 public class SuccessTickView extends View {
     private float mDensity = -1;
-    private Paint mPaint;
+
+    private Paint mPaint, nPaint;
+
+    private float minWidth;
+
+    private float minHeight;
+
+    private float angle, startAngle = 23;
+
     private final float CONST_RADIUS = dip2px(1.2f);
     private final float CONST_RECT_WEIGHT = dip2px(3);
     private final float CONST_LEFT_RECT_W = dip2px(15);
@@ -25,26 +39,61 @@ public class SuccessTickView extends View {
     private boolean mLeftRectGrowMode;
 
     public SuccessTickView(Context context) {
-        super(context);
+        this(context, null);
+    }
+
+    public SuccessTickView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public SuccessTickView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         init();
     }
 
-    public SuccessTickView(Context context, AttributeSet attrs){
-        super(context,attrs);
-        init();
-    }
-
-    private void init () {
+    private void init() {
+        minWidth = dip2px(50);
+        minHeight = dip2px(50);
         mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(dip2px(2.5f));
         mPaint.setColor(getResources().getColor(R.color.success_stroke_color));
+        nPaint = new Paint();
+        nPaint.setColor(getResources().getColor(R.color.success_stroke_color));
         mLeftRectWidth = CONST_LEFT_RECT_W;
         mRightRectWidth = CONST_RIGHT_RECT_W;
         mLeftRectGrowMode = false;
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
+    protected void onDraw(Canvas canvas) {
+
+        canvas.restore();
+        Rect bounds = canvas.getClipBounds();
+
+        float left, right, top, bottom;
+        if (bounds.width() > bounds.height()) {
+            float distance = (bounds.width() / 2 - bounds.height() / 2);
+            left = bounds.left + distance;
+            right = bounds.right - distance;
+            top = bounds.top;
+            bottom = bounds.bottom;
+        } else if (bounds.width() < bounds.height()) {
+            float distance = (bounds.height() / 2 - bounds.width() / 2);
+            top = bounds.top + distance;
+            bottom = bounds.bottom - distance;
+            left = bounds.left;
+            right = bounds.right;
+        } else {
+            left = bounds.left;
+            right = bounds.right;
+            top = bounds.top;
+            bottom = bounds.bottom;
+        }
+        RectF oval = new RectF(left + dip2px(1), top + dip2px(1), right - dip2px(1), bottom - dip2px(1));
+        canvas.drawArc(oval, startAngle, angle, false, mPaint);
+
         int totalW = getWidth();
         int totalH = getHeight();
         // rotate canvas first
@@ -67,24 +116,76 @@ public class SuccessTickView extends View {
             leftRect.bottom = leftRect.top + CONST_RECT_WEIGHT;
         }
 
-        canvas.drawRoundRect(leftRect, CONST_RADIUS, CONST_RADIUS, mPaint);
+        canvas.drawRoundRect(leftRect, CONST_RADIUS, CONST_RADIUS, nPaint);
 
         RectF rightRect = new RectF();
         rightRect.bottom = (totalH + CONST_RIGHT_RECT_W) / 2 + CONST_RECT_WEIGHT - 1;
         rightRect.left = (totalW + CONST_LEFT_RECT_W) / 2;
         rightRect.right = rightRect.left + CONST_RECT_WEIGHT;
         rightRect.top = rightRect.bottom - mRightRectWidth;
-        canvas.drawRoundRect(rightRect, CONST_RADIUS, CONST_RADIUS, mPaint);
+        canvas.drawRoundRect(rightRect, CONST_RADIUS, CONST_RADIUS, nPaint);
+
+        super.onDraw(canvas);
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int width;
+        int height;
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else {
+            int desired = (int) (getPaddingLeft() + minWidth + getPaddingRight());
+            width = desired;
+        }
+
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else {
+            int desired = (int) (getPaddingTop() + minHeight + getPaddingBottom());
+            height = desired;
+        }
+
+        setMeasuredDimension(width, height);
     }
 
     public float dip2px(float dpValue) {
-        if(mDensity == -1) {
+        if (mDensity == -1) {
             mDensity = getResources().getDisplayMetrics().density;
         }
         return dpValue * mDensity + 0.5f;
     }
 
-    public void startTickAnim () {
+    public void startAnimation() {
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 360);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = (float) valueAnimator.getAnimatedValue();
+                if (value <= 180)
+                    angle = -value;
+                else {
+                    startAngle = 203 - value;
+                    angle = value - 360;
+                }
+                invalidate();
+
+            }
+        });
+        animator.setDuration(300);
+        animator.setStartDelay(215);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.start();
+        startTickAnim();
+    }
+
+
+    private void startTickAnim() {
         // hide tick
         mLeftRectWidth = 0;
         mRightRectWidth = 0;
@@ -115,7 +216,7 @@ public class SuccessTickView extends View {
             }
         };
         tickAnim.setDuration(750);
-        tickAnim.setStartOffset(100);
+        tickAnim.setStartOffset(105);
         startAnimation(tickAnim);
     }
 }

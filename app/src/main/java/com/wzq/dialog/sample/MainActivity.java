@@ -1,6 +1,7 @@
 package com.wzq.dialog.sample;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
 
     @Override
@@ -40,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        EasyDialog.build(this).show();
+       final EasyDialog dialog = EasyDialog.build(this, EasyDialog.TYPE_LOADING, null).setConfirmText("确定").setCancelText("取消").setTitleText("Loading");
+        dialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.setTitleText("成功").changeType(EasyDialog.TYPE_SUCCESS);
+            }
+        }, 5000);
     }
 }
