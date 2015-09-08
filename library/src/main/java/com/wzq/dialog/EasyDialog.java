@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +17,9 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
  */
 public class EasyDialog extends Dialog implements View.OnClickListener {
 
-    private View rootView, buttons;
+    public static final int BUTTON_CONFIRM = 0x10;
+    public static final int BUTTON_CANCEL = 0x20;
+    private View rootView;
 
     private SuccessTickView successTickView;
 
@@ -34,7 +35,7 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
 
     private OnActionListener mListener;
 
-    private Button cancel, confirm;
+    private TextView cancel, confirm;
 
     private String mTitleText, mContentText, mConfirmText, mCancelText;
 
@@ -50,18 +51,15 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
             case TYPE_LOADING:
                 circularProgressBar.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
-                buttons.setVisibility(View.GONE);
                 successTickView.setVisibility(View.GONE);
                 break;
             case TYPE_SUCCESS:
                 circularProgressBar.setVisibility(View.GONE);
-                buttons.setVisibility(View.VISIBLE);
                 successTickView.setVisibility(View.VISIBLE);
                 successTickView.startAnimation();
                 break;
             case TYPE_ERROR:
                 circularProgressBar.setVisibility(View.GONE);
-                buttons.setVisibility(View.VISIBLE);
                 successTickView.setVisibility(View.GONE);
                 errorView.setVisibility(View.VISIBLE);
                 startErrorAnimation();
@@ -72,23 +70,22 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (mListener != null) {
-            mListener.onClick(this);
+            mListener.onAction(this, view.getId() == R.id.cancel_button ? BUTTON_CANCEL : BUTTON_CONFIRM);
         } else {
             dismissWithAnimation();
         }
     }
 
     public interface OnActionListener {
-        void onClick(EasyDialog dialog);
+        void onAction(EasyDialog eDialog, int bType);
     }
 
-    public static EasyDialog build(Context context, int type, OnActionListener listener) {
-        return new EasyDialog(context, R.style.alert_dialog, listener, type);
+    public static EasyDialog build(Context context, int type) {
+        return new EasyDialog(context, R.style.alert_dialog, type);
     }
 
-    public EasyDialog(Context context, int themeResId, final OnActionListener mListener, int type) {
+    public EasyDialog(Context context, int themeResId,int type) {
         super(context, themeResId);
-        this.mListener = mListener;
         this.type = type;
         setCancelable(true);
         setCanceledOnTouchOutside(false);
@@ -123,13 +120,11 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_easy_dialog);
-
         rootView = getWindow().getDecorView().findViewById(android.R.id.content);
-        buttons = findViewById(R.id.dialog_buttons);
         circularProgressBar = (CircularProgressBar) findViewById(R.id.dialog_progress);
         successTickView = (SuccessTickView) findViewById(R.id.dialog_success);
-        cancel = (Button) findViewById(R.id.cancel_button);
-        confirm = (Button) findViewById(R.id.confirm_button);
+        cancel = (TextView) findViewById(R.id.cancel_button);
+        confirm = (TextView) findViewById(R.id.confirm_button);
         title = (TextView) findViewById(R.id.dialog_title);
         content = (TextView) findViewById(R.id.dialog_content);
         cancel.setOnClickListener(this);
@@ -137,64 +132,63 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
         errorView = (ImageView) findViewById(R.id.dialog_error);
 
 
-        title.setText(mTitleText);
-        content.setText(mContentText);
-        confirm.setText(mConfirmText);
-        cancel.setText(mCancelText);
+        setTextInView(title, mTitleText);
+        setTextInView(content, mContentText);
+        setTextInView(confirm, mConfirmText);
+        setTextInView(cancel, mCancelText);
         changeType(type);
 
     }
 
-    public String getTitleText() {
-        return mTitleText;
+    private void setTextInView(TextView v, String s){
+        if(!TextUtils.isEmpty(s))v.setText(s);
+        v.setVisibility(TextUtils.isEmpty(s)?View.GONE:View.VISIBLE);
     }
 
     public EasyDialog setTitleText(String mTitleText) {
         this.mTitleText = mTitleText;
-        if (title != null && !TextUtils.isEmpty(mTitleText)) {
-            title.setText(mTitleText);
+        if (title != null ) {
+            setTextInView(title, mTitleText);
         }
         return this;
-    }
-
-    public String getContentText() {
-        return mContentText;
     }
 
     public EasyDialog setContentText(String mContentText) {
         this.mContentText = mContentText;
-        if (content != null && !TextUtils.isEmpty(mContentText)) {
-            content.setText(mContentText);
-            content.setVisibility(View.VISIBLE);
+        if (content != null ) {
+            setTextInView(content, mContentText);
         }
         return this;
     }
 
-    public String getCancelText() {
-        return mCancelText;
-    }
 
     public EasyDialog setCancelText(String mCancelText) {
         this.mCancelText = mCancelText;
-        if (cancel != null && !TextUtils.isEmpty(mCancelText)) {
-            cancel.setText(mCancelText);
-            cancel.setVisibility(View.VISIBLE);
+        if (cancel != null) {
+            setTextInView(cancel, mCancelText);
         }
         return this;
     }
 
-    public String getConfirmText() {
-        return mConfirmText;
-    }
 
     public EasyDialog setConfirmText(String mConfirmText) {
         this.mConfirmText = mConfirmText;
-        if (confirm != null && !TextUtils.isEmpty(mConfirmText)) {
-            confirm.setText(mConfirmText);
-            confirm.setVisibility(View.VISIBLE);
-        }
+        if (confirm != null)
+            setTextInView(confirm, mConfirmText);
         return this;
     }
+
+    public EasyDialog setOnActionListener(OnActionListener listener){
+        this.mListener = listener;
+        return this;
+    }
+
+    public EasyDialog setIsCancelable(boolean b1, boolean b2){
+        setCancelable(b1);
+        setCanceledOnTouchOutside(b2);
+        return this;
+    }
+
 
     @Override
     protected void onStart() {

@@ -10,7 +10,7 @@ import android.view.View;
 import com.wzq.dialog.EasyDialog;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EasyDialog.OnActionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +42,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-       final EasyDialog dialog = EasyDialog.build(this, EasyDialog.TYPE_LOADING, null).setConfirmText("确定").setCancelText("取消").setTitleText("Loading");
-        dialog.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.setTitleText("成功").changeType(EasyDialog.TYPE_SUCCESS);
-            }
-        }, 5000);
+        switch (view.getId()){
+            case R.id.b1:
+                EasyDialog.build(this, EasyDialog.TYPE_SUCCESS).setTitleText("This is a success dialog.").show();
+                break;
+            case R.id.b2:
+                EasyDialog.build(this, EasyDialog.TYPE_ERROR).setTitleText("This is a error dialog.").setCancelText("Yes, close it.").show();
+                break;
+            case R.id.b3:
+                EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading...").setIsCancelable(true, true).show();
+                break;
+            case R.id.b4:
+                final EasyDialog dialog = EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading").setOnActionListener(this);
+                dialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.setTitleText("success").setConfirmText("Yes, do some work.").changeType(EasyDialog.TYPE_SUCCESS);
+                    }
+                }, 2000);
+                break;
+            case R.id.b5:
+                final EasyDialog dialog1 = EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading");
+                dialog1.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog1.setTitleText("error").changeType(EasyDialog.TYPE_ERROR);
+                    }
+                }, 2000);
+                break;
+
+
+        }
+    }
+
+    @Override
+    public void onAction(EasyDialog dialog, int bType) {
+        if (bType == EasyDialog.BUTTON_CONFIRM){
+            System.out.println("confirm");
+            dialog.dismiss();
+        }
     }
 }
