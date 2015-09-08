@@ -20,11 +20,16 @@
     <color name="material_deep_teal_20">#ff80cbc4</color>
     <color name="material_deep_teal_50">#ff009688</color>
 
+
+
+    <color name="pocket_color_1">#85edb9</color>
+    <color name="pocket_color_2">#34bdb7</color>
+    <color name="pocket_color_3">#ee4458</color>
+    <color name="pocket_color_4">#fcb74d</color>
     <integer-array name="colors">
-        <item>@color/material_blue_grey_80</item>
-        <item>@color/success_stroke_color</item>
-        <item>@color/gray_btn_bg_color</item>
-        <item>@color/red_btn_bg_pressed_color</item>
-        <item>@color/material_deep_teal_50</item>
+        <item>@color/pocket_color_1</item>
+        <item>@color/pocket_color_2</item>
+        <item>@color/pocket_color_3</item>
+        <item>@color/pocket_color_4</item>
     </integer-array>
 </resources>

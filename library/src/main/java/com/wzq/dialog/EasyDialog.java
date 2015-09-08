@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 /**
  * Created by wzq on 15/9/2.
@@ -45,6 +46,11 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
 
     public static final int TYPE_ERROR = 2;
     private int type = -1;
+
+    public static void init(int theme, CircularProgressDrawable loadingColors){
+        DialogAttrs.THEME1 = theme;
+        DialogAttrs.COLORS = loadingColors;
+    }
 
     public void changeType(int b) {
         switch (b) {
@@ -81,7 +87,8 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
     }
 
     public static EasyDialog build(Context context, int type) {
-        return new EasyDialog(context, R.style.alert_dialog, type);
+
+        return new EasyDialog(context, DialogAttrs.THEME1>0?DialogAttrs.THEME1:R.style.alert_dialog, type);
     }
 
     public EasyDialog(Context context, int themeResId,int type) {
@@ -131,6 +138,8 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
         confirm.setOnClickListener(this);
         errorView = (ImageView) findViewById(R.id.dialog_error);
 
+        if (DialogAttrs.COLORS!=null)
+            circularProgressBar.setIndeterminateDrawable(DialogAttrs.COLORS);
 
         setTextInView(title, mTitleText);
         setTextInView(content, mContentText);
