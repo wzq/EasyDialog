@@ -15,7 +15,7 @@ import android.view.animation.Transformation;
 /**
  * Created by wzq on 15/9/2.
  */
-public class SuccessTickView extends View {
+public class SuccessAnimView extends View {
     private float mDensity = -1;
 
     private Paint mPaint, nPaint;
@@ -38,15 +38,15 @@ public class SuccessTickView extends View {
     private float mRightRectWidth;
     private boolean mLeftRectGrowMode;
 
-    public SuccessTickView(Context context) {
+    public SuccessAnimView(Context context) {
         this(context, null);
     }
 
-    public SuccessTickView(Context context, AttributeSet attrs) {
+    public SuccessAnimView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SuccessTickView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SuccessAnimView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

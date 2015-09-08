@@ -22,7 +22,7 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
     public static final int BUTTON_CANCEL = 0x20;
     private View rootView;
 
-    private SuccessTickView successTickView;
+    private SuccessAnimView successTickView;
 
     private CircularProgressBar circularProgressBar;
 
@@ -129,7 +129,7 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
         setContentView(R.layout.view_easy_dialog);
         rootView = getWindow().getDecorView().findViewById(android.R.id.content);
         circularProgressBar = (CircularProgressBar) findViewById(R.id.dialog_progress);
-        successTickView = (SuccessTickView) findViewById(R.id.dialog_success);
+        successTickView = (SuccessAnimView) findViewById(R.id.dialog_success);
         cancel = (TextView) findViewById(R.id.cancel_button);
         confirm = (TextView) findViewById(R.id.confirm_button);
         title = (TextView) findViewById(R.id.dialog_title);
