@@ -2,6 +2,7 @@ package com.wzq.dialog;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -48,19 +49,24 @@ public class SuccessAnimView extends View {
 
     public SuccessAnimView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
+
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.EasyDialog);
+        int pColor = typedArray.getColor(R.styleable.EasyDialog_edStrokeColor, getResources().getColor(R.color.success_stroke_color));
+        float strokeWidth = typedArray.getFloat(R.styleable.EasyDialog_edStrokeWidth, 2.5f);
+
         minWidth = dip2px(50);
         minHeight = dip2px(50);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(dip2px(2.5f));
-        mPaint.setColor(getResources().getColor(R.color.success_stroke_color));
+        mPaint.setStrokeWidth(dip2px(strokeWidth));
+        mPaint.setColor(pColor);
         nPaint = new Paint();
-        nPaint.setColor(getResources().getColor(R.color.success_stroke_color));
+        nPaint.setColor(pColor);
         mLeftRectWidth = CONST_LEFT_RECT_W;
         mRightRectWidth = CONST_RIGHT_RECT_W;
         mLeftRectGrowMode = false;

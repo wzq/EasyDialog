@@ -1,11 +1,13 @@
 package com.wzq.dialog.sample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.wzq.dialog.EasyDialog;
 
@@ -71,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements EasyDialog.OnActi
                     }
                 }, 2000);
                 break;
-
+            case R.id.b6:
+                startActivity(new Intent(this, TestActivity.class));
+                break;
 
         }
     }
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements EasyDialog.OnActi
     @Override
     public void onAction(EasyDialog dialog, int bType) {
         if (bType == EasyDialog.BUTTON_CONFIRM){
-            System.out.println("confirm");
+            Toast.makeText(this, "confirm", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         }
     }
