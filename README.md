@@ -1,11 +1,10 @@
 # EasyDialog
 A custom dialog.
 
-
 # Usage
 
 ```groovy
-compile 'com.wzq.easydialog:library:1.0.0'
+compile 'com.wzq.easydialog:library:1.1.0'
 ```
 
 Change loading progress colors or dialog theme.
