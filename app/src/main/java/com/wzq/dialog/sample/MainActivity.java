@@ -2,7 +2,6 @@ package com.wzq.dialog.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,30 +47,7 @@ public class MainActivity extends AppCompatActivity implements EasyDialog.OnActi
                 EasyDialog.build(this, EasyDialog.TYPE_SUCCESS).setTitleText("This is a success dialog.").show();
                 break;
             case R.id.b2:
-                EasyDialog.build(this, EasyDialog.TYPE_ERROR).setTitleText("This is a error dialog.").setCancelText("Yes, close it.").show();
-                break;
-            case R.id.b3:
-                EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading...").setIsCancelable(true, true).show();
-                break;
-            case R.id.b4:
-                final EasyDialog dialog = EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading").setOnActionListener(this);
-                dialog.show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.setTitleText("success").setConfirmText("Yes, do some work.").changeType(EasyDialog.TYPE_SUCCESS);
-                    }
-                }, 2000);
-                break;
-            case R.id.b5:
-                final EasyDialog dialog1 = EasyDialog.build(this, EasyDialog.TYPE_LOADING).setTitleText("loading");
-                dialog1.show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog1.setTitleText("error").changeType(EasyDialog.TYPE_ERROR);
-                    }
-                }, 2000);
+                EasyDialog.build(this, EasyDialog.TYPE_ERROR).setTitleText("This is a error dialog.").setCancelText("Yes, close it.").setOnActionListener(this).show();
                 break;
             case R.id.b6:
                 startActivity(new Intent(this, TestActivity.class));
@@ -82,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements EasyDialog.OnActi
 
     @Override
     public void onAction(EasyDialog dialog, int bType) {
-        if (bType == EasyDialog.BUTTON_CONFIRM){
-            Toast.makeText(this, "confirm", Toast.LENGTH_SHORT).show();
+        if (bType == EasyDialog.BUTTON_CANCEL){
+            Toast.makeText(this, "cancel", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         }
     }

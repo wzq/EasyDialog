@@ -10,9 +10,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import fr.castorflex.android.circularprogressbar.CircularProgressBar;
-import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
-
 /**
  * Created by wzq on 15/9/2.
  */
@@ -23,8 +20,6 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
     private View rootView;
 
     private SuccessAnimView successTickView;
-
-    private CircularProgressBar circularProgressBar;
 
     private TextView title, content;
 
@@ -40,32 +35,20 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
 
     private String mTitleText, mContentText, mConfirmText, mCancelText;
 
-    public static final int TYPE_LOADING = 0;
+//    public static final int TYPE_LOADING = 0;
 
     public static final int TYPE_SUCCESS = 1;
 
     public static final int TYPE_ERROR = 2;
     private int type = -1;
 
-    public static void init(int theme, CircularProgressDrawable loadingColors){
-        DialogAttrs.THEME1 = theme;
-        DialogAttrs.COLORS = loadingColors;
-    }
-
     public void changeType(int b) {
         switch (b) {
-            case TYPE_LOADING:
-                circularProgressBar.setVisibility(View.VISIBLE);
-                errorView.setVisibility(View.GONE);
-                successTickView.setVisibility(View.GONE);
-                break;
             case TYPE_SUCCESS:
-                circularProgressBar.setVisibility(View.GONE);
                 successTickView.setVisibility(View.VISIBLE);
                 successTickView.startAnimation();
                 break;
             case TYPE_ERROR:
-                circularProgressBar.setVisibility(View.GONE);
                 successTickView.setVisibility(View.GONE);
                 errorView.setVisibility(View.VISIBLE);
                 startErrorAnimation();
@@ -88,7 +71,7 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
 
     public static EasyDialog build(Context context, int type) {
 
-        return new EasyDialog(context, DialogAttrs.THEME1>0?DialogAttrs.THEME1:R.style.alert_dialog, type);
+        return new EasyDialog(context,R.style.alert_dialog, type);
     }
 
     public EasyDialog(Context context, int themeResId,int type) {
@@ -128,7 +111,6 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_easy_dialog);
         rootView = getWindow().getDecorView().findViewById(android.R.id.content);
-        circularProgressBar = (CircularProgressBar) findViewById(R.id.dialog_progress);
         successTickView = (SuccessAnimView) findViewById(R.id.dialog_success);
         cancel = (TextView) findViewById(R.id.cancel_button);
         confirm = (TextView) findViewById(R.id.confirm_button);
@@ -138,8 +120,6 @@ public class EasyDialog extends Dialog implements View.OnClickListener {
         confirm.setOnClickListener(this);
         errorView = (ImageView) findViewById(R.id.dialog_error);
 
-        if (DialogAttrs.COLORS!=null)
-            circularProgressBar.setIndeterminateDrawable(DialogAttrs.COLORS);
 
         setTextInView(title, mTitleText);
         setTextInView(content, mContentText);
